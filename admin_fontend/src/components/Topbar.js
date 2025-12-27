@@ -28,6 +28,13 @@ const Topbar = () => {
     }
   };
 
+  const handleSearch = (e) => {
+    if (e.key === 'Enter' && searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+    }
+  };
+
   return (
     <div className="topbar-modern">
       <div className="topbar-left">
@@ -38,20 +45,18 @@ const Topbar = () => {
           </svg>
           <input
             type="text"
-            placeholder="Search anything..."
+            placeholder="Search users..."
             className="search-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={handleSearch}
           />
         </div>
       </div>
 
       <div className="topbar-right">
         <div className="topbar-stats">
-          <div className="stat-item">
-            <span className="stat-icon">🌍</span>
-            <span className="stat-text">Online</span>
-          </div>
+
         </div>
 
         <button

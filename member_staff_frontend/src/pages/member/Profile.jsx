@@ -43,45 +43,62 @@ export default function Profile() {
 
   return (
     <div className="fade-in">
-      <div className="mb-8">
-        <h2 className="page-title">Profile Settings</h2>
-        <p style={{ color: '#64748b', fontSize: '0.875rem' }}>Manage your personal information and security.</p>
-      </div>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+        <div>
+          <h2 className="page-title" style={{ fontSize: '2.8rem', fontWeight: 900, letterSpacing: '-0.04em', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
+            Account <span style={{ color: 'var(--primary)' }}>Settings</span>
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginTop: '0.5rem', fontWeight: 600 }}>
+            Manage your personal information and security preferences.
+          </p>
+        </div>
+      </header>
 
-      <div className="glass-card" style={{ maxWidth: '640px', padding: '2rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2.5rem' }}>
+      <div className="glass-card" style={{ maxWidth: '640px', padding: '3rem', background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginBottom: '3rem' }}>
           <div style={{
-            width: '64px',
-            height: '64px',
-            borderRadius: '16px',
-            background: '#f1f5f9',
+            width: '80px',
+            height: '80px',
+            borderRadius: '24px',
+            background: 'rgba(234, 179, 8, 0.1)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: '1.5rem',
-            fontWeight: 700,
-            color: '#1e293b'
+            fontSize: '2rem',
+            fontWeight: 900,
+            color: 'var(--primary)',
+            border: '1px solid rgba(234, 179, 8, 0.2)',
+            boxShadow: '0 0 20px rgba(234, 179, 8, 0.2)'
           }}>
-            {profile.fullName?.charAt(0) || 'U'}
+            {profile.fullName?.charAt(0) || authUser?.fullName?.charAt(0) || 'U'}
           </div>
           <div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1e293b', margin: 0 }}>{profile.fullName || 'User'}</h3>
-            <p style={{ fontSize: '0.875rem', color: '#64748b', margin: 0, textTransform: 'capitalize' }}>{authUser?.role} Account</p>
+            <h3 style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text-primary)', margin: 0, textTransform: 'uppercase', letterSpacing: '-0.02em' }}>{profile.fullName || authUser?.fullName || 'User'}</h3>
+            <p style={{ fontSize: '0.9rem', color: 'var(--primary)', margin: '0.25rem 0 0 0', textTransform: 'uppercase', fontWeight: 800, letterSpacing: '0.1em' }}>{authUser?.role} Command</p>
           </div>
         </div>
 
         {msg && (
           <div className="fade-in" style={{
-            padding: '1rem',
-            background: msg.type === 'success' ? '#f0fdf4' : '#fef2f2',
-            border: `1px solid ${msg.type === 'success' ? '#dcfce7' : '#fee2e2'}`,
-            color: msg.type === 'success' ? '#166534' : '#991b1b',
-            borderRadius: '8px',
-            marginBottom: '1.5rem',
-            fontSize: '0.875rem',
-            fontWeight: 500,
-            textAlign: 'center'
+            padding: '1.25rem',
+            background: msg.type === 'success' ? 'rgba(234, 179, 8, 0.05)' : 'rgba(239, 68, 68, 0.05)',
+            border: `1px solid ${msg.type === 'success' ? 'rgba(234, 179, 8, 0.1)' : 'rgba(239, 68, 68, 0.1)'}`,
+            color: msg.type === 'success' ? 'var(--primary)' : 'var(--danger)',
+            borderRadius: '16px',
+            marginBottom: '2rem',
+            fontSize: '0.9rem',
+            fontWeight: 800,
+            textAlign: 'center',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.75rem'
           }}>
+            {msg.type === 'success' ? (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6L9 17l-5-5" /></svg>
+            ) : (
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+            )}
             {msg.text}
           </div>
         )}
@@ -130,9 +147,19 @@ export default function Profile() {
             />
           </div>
 
-          <div style={{ marginTop: '0.5rem' }}>
-            <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%' }}>
-              {loading ? 'Saving...' : 'Update Profile'}
+          <div style={{ marginTop: '1rem' }}>
+            <button
+              className="btn hover-glow"
+              type="submit"
+              disabled={loading}
+              style={{ width: '100%', height: '4rem', borderRadius: '16px', background: 'var(--gradient-primary)', color: '#000', fontSize: '1.1rem', fontWeight: 900, letterSpacing: '0.05em', border: 'none' }}
+            >
+              {loading ? (
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', justifyContent: 'center' }}>
+                  <div className="loading-spinner" style={{ width: '20px', height: '20px', borderWidth: '3px' }}></div>
+                  Processing...
+                </div>
+              ) : 'Update Profile'}
             </button>
           </div>
         </form>

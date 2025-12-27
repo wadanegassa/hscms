@@ -17,5 +17,6 @@ router.get('/profile', member.getProfile);
 router.put('/profile', member.updateProfile);
 router.get('/notifications', member.getNotifications);
 router.patch('/notifications/:id/read', member.markNotificationRead);
+router.get('/dashboard-stats', member.getDashboardStats);
 
 module.exports = router;

@@ -61,122 +61,158 @@ export default function MySavings() {
   };
 
   return (
-    <div className="fade-in">
-      <div className="flex-between mb-8">
+    <div className="fade-in" style={{ paddingBottom: '2rem' }}>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
         <div>
-          <h2 className="page-title">Savings History</h2>
-          <p style={{ color: '#64748b', fontSize: '0.875rem' }}>Track your financial growth and contribution history.</p>
+          <h2 className="page-title" style={{ fontSize: '2.8rem', fontWeight: 900, letterSpacing: '-0.04em', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
+            Savings <span style={{ color: 'var(--primary)' }}>History</span>
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginTop: '0.5rem', fontWeight: 600 }}>
+            Track your financial growth and contribution history.
+          </p>
         </div>
-        <div className="glass-card" style={{ padding: '1rem 1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#dcfce7', color: '#166534', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
-          </div>
+
+        <div className="glass-card" style={{ padding: '0.75rem 1.5rem', borderRadius: '16px', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--bg-secondary)' }}>
+          <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--primary)', boxShadow: '0 0 15px var(--primary)' }}></div>
           <div>
-            <div style={{ fontSize: '0.7rem', color: '#64748b', fontWeight: 600, textTransform: 'uppercase' }}>Total Saved</div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1e293b' }}>
-              {(savings || []).reduce((acc, s) => acc + (s.amount || 0), 0).toLocaleString()} <span style={{ fontSize: '0.875rem', fontWeight: 500, color: '#64748b' }}>ETB</span>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Total Saved</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text-primary)' }}>
+              {(savings || []).reduce((acc, s) => acc + (s.amount || 0), 0).toLocaleString()} <span style={{ fontSize: '0.7rem', opacity: 0.5 }}>ETB</span>
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="glass-card mb-6" style={{ padding: '1.5rem' }}>
-        <h3 className="section-title" style={{ marginBottom: '1.25rem' }}>Filter Transactions</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem' }}>
+      <div className="glass-card" style={{ flex: 'none', margin: '0 0 2.5rem 0', padding: '2rem', display: 'block', border: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+          <div style={{ width: '4px', height: '20px', background: 'var(--secondary)', borderRadius: '2px' }}></div>
+          <h4 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '1rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Filter Transactions
+          </h4>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1.5rem' }}>
           <div className="input-group">
-            <label className="label">Start Date</label>
+            <label style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Start Date</label>
             <input
               className="input"
               type="date"
               value={filters.startDate}
               onChange={e => setFilters({ ...filters, startDate: e.target.value })}
+              style={{ background: 'rgba(15, 23, 42, 0.02)', border: '1px solid var(--border)', borderRadius: '12px' }}
             />
           </div>
           <div className="input-group">
-            <label className="label">End Date</label>
+            <label style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, marginBottom: '0.5rem', textTransform: 'uppercase' }}>End Date</label>
             <input
               className="input"
               type="date"
               value={filters.endDate}
-              onChange={setFilters.bind(null, { ...filters, endDate: filters.endDate })} // Fixing bind later
-              onInput={e => setFilters({ ...filters, endDate: e.target.value })}
+              onChange={e => setFilters({ ...filters, endDate: e.target.value })}
+              style={{ background: 'rgba(15, 23, 42, 0.02)', border: '1px solid var(--border)', borderRadius: '12px' }}
             />
           </div>
           <div className="input-group">
-            <label className="label">Min Amount</label>
+            <label style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Min Amount</label>
             <input
               className="input"
               type="number"
-              placeholder="Min"
+              placeholder="Min $"
               value={filters.minAmount}
               onChange={e => setFilters({ ...filters, minAmount: e.target.value })}
+              style={{ background: 'rgba(15, 23, 42, 0.02)', border: '1px solid var(--border)', borderRadius: '12px' }}
             />
           </div>
           <div className="input-group">
-            <label className="label">Max Amount</label>
+            <label style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Search</label>
             <input
               className="input"
-              type="number"
-              placeholder="Max"
-              value={filters.maxAmount}
-              onChange={e => setFilters({ ...filters, maxAmount: e.target.value })}
-            />
-          </div>
-          <div className="input-group">
-            <label className="label">Search</label>
-            <input
-              className="input"
-              placeholder="Search method..."
+              placeholder="Method or details..."
               value={filters.search}
               onChange={e => setFilters({ ...filters, search: e.target.value })}
+              style={{ background: 'rgba(15, 23, 42, 0.02)', border: '1px solid var(--border)', borderRadius: '12px' }}
             />
           </div>
         </div>
       </div>
 
-      <div className="glass-card" style={{ padding: '1rem' }}>
+      <div className="glass-card" style={{ flex: 'none', margin: 0, padding: '0', overflow: 'hidden', border: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
         {loading ? (
-          <div style={{ padding: '4rem', textAlign: 'center' }}>
+          <div style={{ padding: '8rem', textAlign: 'center' }}>
             <div className="loading-spinner"></div>
-            <p style={{ color: '#64748b', marginTop: '1rem' }}>Loading history...</p>
+            <div style={{ color: 'var(--text-muted)', marginTop: '1.5rem' }}>Fetching records...</div>
           </div>
         ) : (
-          <div className="table-container">
-            <table className="table">
+          <div className="table-container" style={{ margin: 0, borderRadius: 0, border: 'none' }}>
+            <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
               <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Amount</th>
-                  <th>Method</th>
-                  <th>Status</th>
+                <tr style={{ background: 'rgba(15, 23, 42, 0.02)' }}>
+                  <th style={{ padding: '1.25rem 2rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Date & Time</th>
+                  <th style={{ padding: '1.25rem 2rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Amount</th>
+                  <th style={{ padding: '1.25rem 2rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Method</th>
+                  <th style={{ padding: '1.25rem 2rem', textAlign: 'right', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Status</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredSavings.map((saving, idx) => (
-                  <tr key={saving._id}>
-                    <td>
-                      <div style={{ fontWeight: 600, color: '#1e293b' }}>
+                  <tr key={saving._id} style={{
+                    borderBottom: '1px solid var(--border)',
+                    animation: `slideUp 0.4s ease forwards ${idx * 0.05}s`,
+                    opacity: 0
+                  }}>
+                    <td style={{ padding: '1.5rem 2rem' }}>
+                      <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: '1rem' }}>
                         {new Date(saving.date).toLocaleDateString()}
                       </div>
-                      <div style={{ fontSize: '0.75rem', color: '#64748b' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
                         {new Date(saving.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </div>
                     </td>
-                    <td style={{ fontWeight: 700, color: '#16a34a' }}>
-                      +{saving.amount.toLocaleString()} ETB
+                    <td style={{ padding: '1.5rem 2rem' }}>
+                      <div style={{ fontWeight: 900, color: 'var(--primary)', fontSize: '1.1rem' }}>
+                        +{saving.amount.toLocaleString()} <span style={{ fontSize: '0.7rem', opacity: 0.5 }}>ETB</span>
+                      </div>
                     </td>
-                    <td>
-                      <span style={{ textTransform: 'capitalize' }}>{saving.paymentMethod}</span>
+                    <td style={{ padding: '1.5rem 2rem' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: 'var(--text-primary)', fontWeight: 700 }}>
+                        <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--secondary)' }}></div>
+                        <span style={{ textTransform: 'capitalize' }}>{saving.paymentMethod}</span>
+                      </div>
                     </td>
-                    <td>
-                      <span className="badge badge-success">Completed</span>
+                    <td style={{ padding: '1.5rem 2rem', textAlign: 'right' }}>
+                      <span style={{
+                        padding: '6px 12px',
+                        borderRadius: '10px',
+                        fontSize: '0.7rem',
+                        fontWeight: 900,
+                        textTransform: 'uppercase',
+                        background: 'rgba(234, 179, 8, 0.1)',
+                        color: 'var(--primary)',
+                        border: '1px solid rgba(234, 179, 8, 0.1)',
+                        letterSpacing: '0.05em'
+                      }}>
+                        Completed
+                      </span>
                     </td>
                   </tr>
                 ))}
                 {filteredSavings.length === 0 && (
                   <tr>
-                    <td colSpan="4" style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
-                      No transactions found matching your filters.
+                    <td colSpan="4" style={{ padding: '8rem 2rem', textAlign: 'center' }}>
+                      <div style={{
+                        width: '80px',
+                        height: '80px',
+                        background: 'rgba(15, 23, 42, 0.02)',
+                        borderRadius: '24px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        margin: '0 auto 1.5rem',
+                        border: '1px solid var(--border)'
+                      }}>
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
+                      </div>
+                      <h3 style={{ color: 'var(--text-primary)', fontWeight: 900, fontSize: '1.5rem', margin: 0 }}>No Transactions</h3>
+                      <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>No savings records found matching your criteria.</p>
                     </td>
                   </tr>
                 )}

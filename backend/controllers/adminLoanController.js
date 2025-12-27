@@ -1,11 +1,15 @@
 const Loan = require('../models/Loan');
+const User = require('../models/User');
 const AuditLog = require('../models/AuditLog');
 const Notification = require('../models/Notification');
 const { success, error } = require('../utils/response');
 
 exports.pendingLoans = async (req, res, next) => {
   try {
-    const loans = await Loan.find({ status: 'pending' }).sort({ createdAt: -1 });
+    const loans = await Loan.find({ status: 'pending' })
+      .populate('memberId', 'fullName email phone nationalId bankAccount telebirr')
+      .sort({ createdAt: -1 });
+    console.log('Pending Loans (Server):', JSON.stringify(loans, null, 2));
     success(res, loans);
   } catch (err) { next(err); }
 };

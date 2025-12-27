@@ -4,7 +4,7 @@ const auth = require('../middleware/authMiddleware');
 const role = require('../middleware/roleMiddleware');
 const staff = require('../controllers/staffController');
 
-router.use(auth, role('staff'));
+router.use(auth, role('staff', 'admin'));
 
 router.post('/register-member', staff.registerMember);
 router.get('/member-lookup', staff.memberLookup);

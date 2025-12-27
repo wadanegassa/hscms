@@ -9,10 +9,21 @@ import LoanApprovals from './pages/LoanApprovals';
 import Reports from './pages/Reports';
 import AuditLogs from './pages/AuditLogs';
 import Login from './pages/Login';
-import Unauthorized from './pages/Unauthorized';
+import LoanOverview from './pages/LoanOverview';
+import Users from './pages/Users';
+import SearchResults from './pages/SearchResults';
+import Settings from './pages/Settings';
+import Transactions from './pages/Transactions';
 import PrivateRoute from './routes/PrivateRoute';
 import { useLocation } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+
+const Unauthorized = () => (
+  <div style={{ padding: '4rem', textAlign: 'center', color: 'var(--text-primary)' }}>
+    <h1>403 - Unauthorized Access</h1>
+    <p>You do not have permission to view this page.</p>
+  </div>
+);
 
 function App() {
   const location = useLocation();
@@ -31,8 +42,12 @@ function App() {
             <Route path="/staff" element={<Staff />} />
             <Route path="/members" element={<Members />} />
             <Route path="/loans" element={<LoanApprovals />} />
+            <Route path="/loan-overview" element={<LoanOverview />} />
             <Route path="/reports" element={<Reports />} />
-            <Route path="/audit-logs" element={<AuditLogs />} />
+            <Route path="/search" element={<SearchResults />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/transactions" element={<Transactions />} />
           </Route>
 
           <Route path="/unauthorized" element={<Unauthorized />} />

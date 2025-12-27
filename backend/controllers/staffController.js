@@ -9,7 +9,7 @@ const User = require('../models/User');
 
 exports.registerMember = async (req, res, next) => {
   try {
-    const { fullName, email, password, phone } = req.body;
+    const { fullName, email, password, phone, nationalId, bankAccount, telebirr } = req.body;
     const existing = await User.findOne({ email });
     if (existing) return error(res, 'Email already in use', 400);
 
@@ -19,13 +19,16 @@ exports.registerMember = async (req, res, next) => {
       email,
       password,
       phone,
+      nationalId,
+      bankAccount,
+      telebirr,
       role: 'member',
       status: 'active'
     });
 
     await user.save();
     await AuditLog.create({ action: `Registered member ${email}`, performedBy: req.user._id, targetEntity: `User:${user._id}` });
-    success(res, { id: user._id, email: user.email, password: user.password }, 'Member registered', 201);
+    success(res, { id: user._id, fullName: user.fullName, email: user.email, password: user.password }, 'Member registered', 201);
   } catch (err) {
     next(err);
   }
@@ -37,7 +40,12 @@ exports.memberLookup = async (req, res, next) => {
     if (!email) return error(res, 'Email required', 400);
     const user = await User.findOne({ email, role: 'member' });
     if (!user) return error(res, 'Member not found', 404);
-    success(res, { id: user._id, fullName: user.fullName, email: user.email });
+    const savingsAgg = await Saving.aggregate([
+      { $match: { memberId: user._id } },
+      { $group: { _id: null, total: { $sum: '$amount' } } }
+    ]);
+    const totalSaved = savingsAgg[0] ? savingsAgg[0].total : 0;
+    success(res, { id: user._id, fullName: user.fullName, email: user.email, totalSaved });
   } catch (err) {
     next(err);
   }
@@ -86,15 +94,48 @@ exports.createRepayment = async (req, res, next) => {
 exports.getMemberLoans = async (req, res, next) => {
   try {
     const { memberId } = req.params;
-    const loans = await Loan.find({ memberId }).sort({ createdAt: -1 });
-    success(res, loans);
+    const loans = await Loan.find({ memberId }).sort({ createdAt: -1 }).lean();
+
+    const loansWithBalance = await Promise.all(loans.map(async (loan) => {
+      const totalDue = loan.amount + (loan.amount * loan.interestRate / 100);
+      const repaidAgg = await Repayment.aggregate([
+        { $match: { loanId: loan._id } },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]);
+      const totalRepaid = repaidAgg[0] ? repaidAgg[0].total : 0;
+      return {
+        ...loan,
+        remainingBalance: Math.max(0, totalDue - totalRepaid),
+        totalRepaid
+      };
+    }));
+
+    success(res, loansWithBalance);
   } catch (err) { next(err); }
 };
 
 exports.listLoansForStaff = async (req, res, next) => {
   try {
-    const loans = await Loan.find().sort({ createdAt: -1 }).limit(500);
-    success(res, loans);
+    const loans = await Loan.find()
+      .populate('memberId', 'fullName email')
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const loansWithBalance = await Promise.all(loans.map(async (loan) => {
+      const totalDue = loan.amount + (loan.amount * loan.interestRate / 100);
+      const repaidAgg = await Repayment.aggregate([
+        { $match: { loanId: loan._id } },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]);
+      const totalRepaid = repaidAgg[0] ? repaidAgg[0].total : 0;
+      return {
+        ...loan,
+        remainingBalance: Math.max(0, totalDue - totalRepaid),
+        totalRepaid
+      };
+    }));
+
+    success(res, loansWithBalance);
   } catch (err) { next(err); }
 };
 

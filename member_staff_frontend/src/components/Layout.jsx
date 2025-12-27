@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import Sidebar from './Sidebar';
+import TopNav from './TopNav';
 import { AuthContext } from '../context/AuthContext';
 
 export default function Layout({ children }) {
@@ -12,25 +13,12 @@ export default function Layout({ children }) {
     <div className="app-shell">
       <Sidebar role={user.role} isOpen={isSidebarOpen} />
 
-
-
-      {isSidebarOpen && (
-        <div
-          className="sidebar-overlay"
-          onClick={() => setIsSidebarOpen(false)}
-          style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0, 0, 0, 0.3)',
-            backdropFilter: 'blur(4px)',
-            zIndex: 90
-          }}
-        />
-      )}
-
-      <main className="main-content">
-        {children}
-      </main>
+      <div className="main-wrapper">
+        <TopNav />
+        <main className="main-content">
+          {children}
+        </main>
+      </div>
 
       <style>{`
         .app-shell {

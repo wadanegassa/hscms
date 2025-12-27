@@ -19,6 +19,7 @@ const LoanApprovals = () => {
       const res = await api.get('/admin/loans/pending');
       // Handle both wrapped and unwrapped responses
       const loansData = res.data?.data || res.data || [];
+      console.log('Loans Data:', loansData);
       setLoans(Array.isArray(loansData) ? loansData : []);
     } catch (err) {
       console.error(err);
@@ -64,138 +65,131 @@ const LoanApprovals = () => {
 
   return (
     <div className="fade-in" style={{ paddingBottom: '2rem' }}>
-      <div className="flex-between mb-8" style={{ alignItems: 'flex-end' }}>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
         <div>
-          <h2 className="page-title" style={{ marginBottom: '0.5rem', fontSize: '2rem' }}>💸 Loan Approvals</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '1rem', margin: 0 }}>
-            Review and manage pending loan applications from members.
+          <h2 className="page-title" style={{ fontSize: '2.5rem', fontWeight: 900, letterSpacing: '-0.03em', background: 'linear-gradient(to right, #fff, #94a3b8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            Loan Approvals
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginTop: '0.5rem' }}>
+            Review and process pending financial requests.
           </p>
         </div>
+
         <div className="glass-card" style={{
           display: 'flex',
           alignItems: 'center',
           gap: '1rem',
           padding: '0.75rem 1.5rem',
-          borderRadius: '12px'
+          borderRadius: '16px',
+          border: '1px solid var(--border)'
         }}>
-          <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: 'var(--warning)', boxShadow: '0 0 10px var(--warning)' }}></div>
+          <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--warning)', boxShadow: '0 0 15px var(--warning)' }}></div>
           <div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '600', textTransform: 'uppercase' }}>Pending Requests</div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--warning)' }}>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Pending Review</div>
+            <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--warning)' }}>
               {loans.length}
             </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      <div className="glass-card" style={{ overflow: 'hidden' }}>
-        {loading ? (
-          <div className="loading-container" style={{ padding: '4rem' }}>
-            <div className="loading-spinner"></div>
-            <div style={{ color: 'var(--text-secondary)', marginTop: '1rem' }}>Fetching loan applications...</div>
+      {loading ? (
+        <div className="loading-container" style={{ padding: '8rem' }}>
+          <div className="loading-spinner"></div>
+          <div style={{ color: 'var(--text-muted)', marginTop: '1.5rem' }}>Fetching applications...</div>
+        </div>
+      ) : loans.length === 0 ? (
+        <div className="glass-card" style={{ padding: '6rem 2rem', textAlign: 'center', borderRadius: '32px' }}>
+          <div style={{
+            width: '100px',
+            height: '100px',
+            background: 'rgba(16, 185, 129, 0.05)',
+            borderRadius: '30px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            margin: '0 auto 2rem',
+            border: '1px solid rgba(16, 185, 129, 0.1)'
+          }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
           </div>
-        ) : loans.length === 0 ? (
-          <div style={{ padding: '6rem 2rem', textAlign: 'center' }}>
-            <div style={{
-              width: '80px',
-              height: '80px',
-              background: 'rgba(16, 185, 129, 0.1)',
-              borderRadius: '24px',
+          <h3 style={{ fontSize: '2rem', color: 'var(--text-primary)', fontWeight: 900, margin: '0 0 1rem 0' }}>Inbox Zero!</h3>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', maxWidth: '400px', margin: '0 auto' }}>All loan applications have been processed. Great job!</p>
+        </div>
+      ) : (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))', gap: '1.5rem' }}>
+          {loans.map((loan, idx) => (
+            <div key={loan._id} className="user-profile scale-up" style={{
+              flex: 'none',
+              margin: 0,
+              padding: '2rem',
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              margin: '0 auto 1.5rem',
-              border: '1px solid rgba(16, 185, 129, 0.2)'
+              flexDirection: 'column',
+              animation: `slideUp 0.5s ease forwards ${idx * 0.1}s`,
+              opacity: 0,
+              background: 'var(--bg-card)',
+              border: '1px solid var(--border)'
             }}>
-              <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5">
-                <path d="M20 6L9 17l-5-5" />
-              </svg>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+                <div style={{
+                  width: '56px',
+                  height: '56px',
+                  borderRadius: '18px',
+                  background: 'var(--bg-dark)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '1.5rem',
+                  color: 'var(--primary)',
+                  fontWeight: 900,
+                  border: '1px solid var(--border)'
+                }}>
+                  {loan.memberId?.fullName?.charAt(0) || '?'}
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Amount</div>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--primary)' }}>
+                    ${loan.amount?.toLocaleString()}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginBottom: '1.5rem' }}>
+                <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: '1.25rem' }}>{loan.memberId?.fullName || 'Unknown Member'}</div>
+                <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '4px' }}>Requested on {new Date(loan.requestDate).toLocaleDateString()}</div>
+              </div>
+
+              <div style={{
+                background: 'rgba(255,255,255,0.02)',
+                padding: '1rem',
+                borderRadius: '12px',
+                border: '1px solid var(--border)',
+                marginBottom: '2rem',
+                flex: 1
+              }}>
+                <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', marginBottom: '0.5rem' }}>Purpose</div>
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', margin: 0, lineHeight: '1.5' }}>
+                  {loan.purpose || 'No purpose specified'}
+                </p>
+              </div>
+
+              <button
+                onClick={() => setSelected(loan)}
+                className="btn btn-primary hover-glow"
+                style={{
+                  width: '100%',
+                  padding: '1rem',
+                  borderRadius: '14px',
+                }}
+              >
+                Review Application
+              </button>
             </div>
-            <h3 style={{ fontSize: '1.5rem', color: 'var(--text-primary)', fontWeight: '800', margin: '0 0 0.5rem 0' }}>All Caught Up!</h3>
-            <p style={{ color: 'var(--text-muted)', margin: 0 }}>No pending loan requests require your attention right now.</p>
-          </div>
-        ) : (
-          <div className="table-container" style={{ margin: 0, borderRadius: 0, border: 'none' }}>
-            <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
-              <thead>
-                <tr style={{ background: 'rgba(255,255,255,0.03)' }}>
-                  <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Member</th>
-                  <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Amount</th>
-                  <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Purpose</th>
-                  <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Requested On</th>
-                  <th style={{ padding: '1.25rem 1.5rem', textAlign: 'right', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {loans.map((loan, idx) => (
-                  <tr key={loan._id} className="hover-lift" style={{
-                    borderBottom: '1px solid var(--border)',
-                    animation: `slideInRight 0.4s ease forwards ${idx * 0.05}s`,
-                    opacity: 0
-                  }}>
-                    <td style={{ padding: '1.25rem 1.5rem' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <div style={{
-                          width: '40px',
-                          height: '40px',
-                          borderRadius: '10px',
-                          background: 'var(--gradient-primary)',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '1.25rem',
-                          color: 'white',
-                          fontWeight: '700'
-                        }}>
-                          {loan.memberId?.fullName?.charAt(0) || '?'}
-                        </div>
-                        <div>
-                          <div style={{ fontWeight: 700, color: 'var(--text-primary)', fontSize: '1rem' }}>{loan.memberId?.fullName || 'Unknown Member'}</div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>ID: {loan.memberId?._id?.slice(-6).toUpperCase() || 'N/A'}</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td style={{ padding: '1.25rem 1.5rem' }}>
-                      <div style={{ color: 'var(--success)', fontWeight: 800, fontSize: '1.125rem' }}>
-                        {loan.amount?.toLocaleString()} <span style={{ fontSize: '0.75rem', opacity: 0.8 }}>ETB</span>
-                      </div>
-                    </td>
-                    <td style={{ padding: '1.25rem 1.5rem' }}>
-                      <div style={{
-                        color: 'var(--text-secondary)',
-                        fontSize: '0.875rem',
-                        maxWidth: '250px',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        whiteSpace: 'nowrap'
-                      }}>
-                        {loan.purpose || 'No purpose specified'}
-                      </div>
-                    </td>
-                    <td style={{ padding: '1.25rem 1.5rem', color: 'var(--text-muted)', fontSize: '0.875rem' }}>
-                      {new Date(loan.requestDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </td>
-                    <td style={{ padding: '1.25rem 1.5rem', textAlign: 'right' }}>
-                      <button
-                        onClick={() => setSelected(loan)}
-                        className="btn btn-primary hover-glow"
-                        style={{
-                          padding: '0.6rem 1.25rem',
-                          borderRadius: '10px',
-                          fontWeight: '700',
-                          fontSize: '0.875rem'
-                        }}
-                      >
-                        Review
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+          ))}
+        </div>
+      )}
 
       {selected && (
         <div className="modal-overlay" onClick={() => !processing && setSelected(null)} style={{ backdropFilter: 'blur(8px)' }}>
@@ -236,6 +230,29 @@ const LoanApprovals = () => {
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Applicant</div>
                 <div style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-primary)' }}>{selected.memberId?.fullName}</div>
                 <div style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>{selected.memberId?.email}</div>
+                <div style={{ marginTop: '0.75rem', display: 'grid', gap: '0.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                    <span style={{ width: '20px' }}>🆔</span>
+                    <span style={{ fontWeight: 600 }}>National ID:</span>
+                    <span style={{ color: selected.memberId?.nationalId ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                      {selected.memberId?.nationalId || 'Not provided'}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                    <span style={{ width: '20px' }}>🏦</span>
+                    <span style={{ fontWeight: 600 }}>Bank (CBE):</span>
+                    <span style={{ color: selected.memberId?.bankAccount ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                      {selected.memberId?.bankAccount || 'Not provided'}
+                    </span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
+                    <span style={{ width: '20px' }}>📱</span>
+                    <span style={{ fontWeight: 600 }}>Telebirr:</span>
+                    <span style={{ color: selected.memberId?.telebirr ? 'var(--text-primary)' : 'var(--text-muted)' }}>
+                      {selected.memberId?.telebirr || 'Not provided'}
+                    </span>
+                  </div>
+                </div>
               </div>
               <div>
                 <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: '700', textTransform: 'uppercase', marginBottom: '0.5rem' }}>Requested Amount</div>
@@ -315,11 +332,6 @@ const LoanApprovals = () => {
                 style={{
                   padding: '0.875rem 2.5rem',
                   borderRadius: '12px',
-                  fontWeight: '700',
-                  background: 'var(--success)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem'
                 }}
               >
                 {processing ? (

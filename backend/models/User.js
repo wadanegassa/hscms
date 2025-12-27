@@ -7,6 +7,9 @@ const userSchema = new mongoose.Schema({
   phone: { type: String },
   role: { type: String, enum: ['admin', 'staff', 'member'], default: 'member' },
   status: { type: String, enum: ['active', 'suspended'], default: 'active' },
+  nationalId: { type: String },
+  bankAccount: { type: String },
+  telebirr: { type: String },
   createdAt: { type: Date, default: Date.now }
 });
 

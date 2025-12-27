@@ -76,31 +76,85 @@ export default function MyLoans() {
     }
   };
 
+  const getStatusBadge = (status) => {
+    const styles = {
+      approved: { bg: 'rgba(234, 179, 8, 0.1)', color: 'var(--primary)', label: 'Approved', icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M20 6L9 17l-5-5" /></svg> },
+      rejected: { bg: 'rgba(239, 68, 68, 0.1)', color: 'var(--danger)', label: 'Rejected', icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M18 6L6 18M6 6l12 12" /></svg> },
+      active: { bg: 'rgba(234, 179, 8, 0.1)', color: 'var(--primary)', label: 'Active', icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /></svg> },
+      completed: { bg: 'rgba(148, 163, 184, 0.1)', color: 'var(--text-muted)', label: 'Completed', icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg> },
+      pending: { bg: 'rgba(255, 171, 0, 0.1)', color: 'var(--warning)', label: 'Pending', icon: <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg> }
+    };
+    const style = styles[status] || styles.pending;
+    return (
+      <span style={{
+        padding: '6px 12px',
+        borderRadius: '10px',
+        fontSize: '0.7rem',
+        fontWeight: 900,
+        textTransform: 'uppercase',
+        background: style.bg,
+        color: style.color,
+        border: `1px solid ${style.bg}`,
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '6px',
+        letterSpacing: '0.05em'
+      }}>
+        {style.icon}
+        {style.label}
+      </span>
+    );
+  };
+
   if (loading) {
     return (
-      <div className="loading-container">
+      <div style={{ padding: '8rem', textAlign: 'center' }}>
         <div className="loading-spinner"></div>
-        <p style={{ color: '#64748b', marginTop: '1rem' }}>Loading your loans...</p>
+        <div style={{ color: 'var(--text-muted)', marginTop: '1.5rem' }}>Fetching your loan portfolio...</div>
       </div>
     );
   }
 
   return (
-    <div className="fade-in">
-      <div className="mb-8">
-        <h2 className="page-title">My Loans</h2>
-        <p style={{ color: '#64748b', fontSize: '0.875rem' }}>Track your loan applications and repayment history</p>
-      </div>
+    <div className="fade-in" style={{ paddingBottom: '2rem' }}>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+        <div>
+          <h2 className="page-title" style={{ fontSize: '2.8rem', fontWeight: 900, letterSpacing: '-0.04em', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
+            My <span style={{ color: 'var(--primary)' }}>Loans</span>
+          </h2>
+          <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginTop: '0.5rem', fontWeight: 600 }}>
+            Track your loan applications and repayment history.
+          </p>
+        </div>
 
-      <div className="glass-card mb-6" style={{ padding: '1.5rem' }}>
-        <h3 className="section-title" style={{ marginBottom: '1.25rem' }}>Filter Loans</h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem' }}>
+        <div style={{ display: 'flex', gap: '1.5rem' }}>
+          <div className="glass-card" style={{ padding: '0.75rem 1.5rem', borderRadius: '16px', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: '1rem', background: 'var(--bg-secondary)' }}>
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: 'var(--primary)', boxShadow: '0 0 15px var(--primary)' }}></div>
+            <div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Active Loans</div>
+              <div style={{ fontSize: '1.5rem', fontWeight: 900, color: 'var(--text-primary)' }}>
+                {loans.filter(l => l.status === 'active' || l.status === 'approved').length}
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div className="glass-card" style={{ flex: 'none', margin: '0 0 2.5rem 0', padding: '2rem', display: 'block', border: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+          <div style={{ width: '4px', height: '20px', background: 'var(--primary)', borderRadius: '2px' }}></div>
+          <h4 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '1rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            Filter Portfolio
+          </h4>
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1.5rem' }}>
           <div className="input-group">
-            <label className="label">Status</label>
+            <label style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Status</label>
             <select
               className="input"
               value={filters.status}
               onChange={e => setFilters({ ...filters, status: e.target.value })}
+              style={{ background: 'rgba(15, 23, 42, 0.02)', border: '1px solid var(--border)', borderRadius: '12px', height: '3rem' }}
             >
               <option value="">All Statuses</option>
               <option value="pending">Pending</option>
@@ -111,76 +165,74 @@ export default function MyLoans() {
             </select>
           </div>
           <div className="input-group">
-            <label className="label">Start Date</label>
+            <label style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Start Date</label>
             <input
               className="input"
               type="date"
               value={filters.startDate}
               onChange={e => setFilters({ ...filters, startDate: e.target.value })}
+              style={{ background: 'rgba(15, 23, 42, 0.02)', border: '1px solid var(--border)', borderRadius: '12px' }}
             />
           </div>
           <div className="input-group">
-            <label className="label">End Date</label>
-            <input
-              className="input"
-              type="date"
-              value={filters.endDate}
-              onChange={e => setFilters({ ...filters, endDate: e.target.value })}
-            />
-          </div>
-          <div className="input-group">
-            <label className="label">Min Amount</label>
+            <label style={{ display: 'block', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, marginBottom: '0.5rem', textTransform: 'uppercase' }}>Min Amount</label>
             <input
               className="input"
               type="number"
-              placeholder="Min"
+              placeholder="Min $"
               value={filters.minAmount}
               onChange={e => setFilters({ ...filters, minAmount: e.target.value })}
-            />
-          </div>
-          <div className="input-group">
-            <label className="label">Max Amount</label>
-            <input
-              className="input"
-              type="number"
-              placeholder="Max"
-              value={filters.maxAmount}
-              onChange={e => setFilters({ ...filters, maxAmount: e.target.value })}
+              style={{ background: 'rgba(15, 23, 42, 0.02)', border: '1px solid var(--border)', borderRadius: '12px' }}
             />
           </div>
         </div>
       </div>
 
-      <div className="glass-card" style={{ padding: '1rem' }}>
-        <div className="table-container">
-          <table className="table">
+      <div className="glass-card" style={{ flex: 'none', margin: 0, padding: '0', overflow: 'hidden', border: '1px solid var(--border)', background: 'var(--bg-secondary)' }}>
+        <div className="table-container" style={{ margin: 0, borderRadius: 0, border: 'none' }}>
+          <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
             <thead>
-              <tr>
-                <th>Date</th>
-                <th>Amount</th>
-                <th>Status</th>
-                <th>Purpose</th>
-                <th style={{ textAlign: 'right' }}>Actions</th>
+              <tr style={{ background: 'rgba(15, 23, 42, 0.02)' }}>
+                <th style={{ padding: '1.25rem 2rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Date</th>
+                <th style={{ padding: '1.25rem 2rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Principal</th>
+                <th style={{ padding: '1.25rem 2rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Remaining</th>
+                <th style={{ padding: '1.25rem 2rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Status</th>
+                <th style={{ padding: '1.25rem 2rem', textAlign: 'right', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
-              {filteredLoans.map((loan) => (
+              {filteredLoans.map((loan, idx) => (
                 <React.Fragment key={loan._id}>
-                  <tr>
-                    <td>{new Date(loan.createdAt).toLocaleDateString()}</td>
-                    <td style={{ fontWeight: 700, color: '#1e293b' }}>{loan.amount.toLocaleString()} ETB</td>
-                    <td>
-                      <span className={`badge badge-${loan.status === 'active' || loan.status === 'approved' || loan.status === 'completed' ? 'success' :
-                        loan.status === 'pending' ? 'warning' : 'danger'
-                        }`}>
-                        {loan.status}
-                      </span>
+                  <tr style={{
+                    borderBottom: '1px solid var(--border)',
+                    animation: `slideUp 0.4s ease forwards ${idx * 0.05}s`,
+                    opacity: 0
+                  }}>
+                    <td style={{ padding: '1.5rem 2rem' }}>
+                      <div style={{ fontWeight: 800, color: 'var(--text-primary)', fontSize: '1rem' }}>
+                        {new Date(loan.createdAt).toLocaleDateString()}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.25rem' }}>
+                        ID: {loan._id.slice(-6).toUpperCase()}
+                      </div>
                     </td>
-                    <td style={{ color: '#64748b' }}>{loan.purpose}</td>
-                    <td style={{ textAlign: 'right' }}>
+                    <td style={{ padding: '1.5rem 2rem' }}>
+                      <div style={{ fontWeight: 900, color: 'var(--text-primary)', fontSize: '1.1rem' }}>
+                        {loan.amount.toLocaleString()} <span style={{ fontSize: '0.7rem', opacity: 0.5 }}>ETB</span>
+                      </div>
+                    </td>
+                    <td style={{ padding: '1.5rem 2rem' }}>
+                      <div style={{ fontWeight: 900, color: 'var(--warning)', fontSize: '1.1rem' }}>
+                        {Math.round(loan.remainingBalance).toLocaleString()} <span style={{ fontSize: '0.7rem', opacity: 0.5 }}>ETB</span>
+                      </div>
+                    </td>
+                    <td style={{ padding: '1.5rem 2rem' }}>
+                      {getStatusBadge(loan.status)}
+                    </td>
+                    <td style={{ padding: '1.5rem 2rem', textAlign: 'right' }}>
                       <button
-                        className="btn btn-secondary"
-                        style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }}
+                        className="btn hover-lift"
+                        style={{ padding: '0.6rem 1.2rem', fontSize: '0.75rem', borderRadius: '10px', background: expandedLoan === loan._id ? 'var(--bg)' : 'rgba(15, 23, 42, 0.05)', color: 'var(--text-primary)', border: '1px solid var(--border)', fontWeight: 800 }}
                         onClick={() => toggleRepayments(loan._id)}
                       >
                         {expandedLoan === loan._id ? 'Hide History' : 'View History'}
@@ -189,31 +241,40 @@ export default function MyLoans() {
                   </tr>
                   {expandedLoan === loan._id && (
                     <tr>
-                      <td colSpan="5" style={{ padding: '1.5rem', background: '#f8fafc', borderRadius: '8px' }}>
-                        <div style={{ maxWidth: '600px' }}>
-                          <h4 style={{ fontSize: '0.875rem', fontWeight: 700, color: '#1e293b', marginBottom: '1rem' }}>Repayment History</h4>
+                      <td colSpan="5" style={{ padding: '2rem', background: 'rgba(255,255,255,0.02)' }}>
+                        <div className="fade-in" style={{ maxWidth: '800px', margin: '0 auto' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.5rem' }}>
+                            <div style={{ width: '3px', height: '16px', background: 'var(--secondary)', borderRadius: '2px' }}></div>
+                            <h4 style={{ margin: 0, color: 'var(--text-primary)', fontSize: '0.9rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                              Repayment History
+                            </h4>
+                          </div>
+
                           {repayments[loan._id] && repayments[loan._id].length > 0 ? (
-                            <table className="table" style={{ background: 'transparent' }}>
-                              <thead>
-                                <tr>
-                                  <th>Date</th>
-                                  <th>Amount</th>
-                                  <th>Method</th>
-                                </tr>
-                              </thead>
-                              <tbody>
-                                {repayments[loan._id].map((rep, idx) => (
-                                  <tr key={idx}>
-                                    <td>{new Date(rep.date).toLocaleDateString()}</td>
-                                    <td style={{ fontWeight: 700, color: '#16a34a' }}>{rep.amount.toLocaleString()} ETB</td>
-                                    <td style={{ textTransform: 'capitalize' }}>{rep.paymentMethod}</td>
+                            <div style={{ borderRadius: '16px', overflow: 'hidden', border: '1px solid var(--border)' }}>
+                              <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                <thead>
+                                  <tr style={{ background: 'rgba(255,255,255,0.02)' }}>
+                                    <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase' }}>Date</th>
+                                    <th style={{ padding: '1rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase' }}>Amount</th>
+                                    <th style={{ padding: '1rem', textAlign: 'right', color: 'var(--text-muted)', fontSize: '0.7rem', fontWeight: 800, textTransform: 'uppercase' }}>Method</th>
                                   </tr>
-                                ))}
-                              </tbody>
-                            </table>
+                                </thead>
+                                <tbody>
+                                  {repayments[loan._id].map((rep, rIdx) => (
+                                    <tr key={rIdx} style={{ borderTop: '1px solid var(--border)' }}>
+                                      <td style={{ padding: '1rem', color: 'var(--text-primary)', fontWeight: 700 }}>{new Date(rep.date).toLocaleDateString()}</td>
+                                      <td style={{ padding: '1rem', color: 'var(--primary)', fontWeight: 900 }}>+{rep.amount.toLocaleString()} ETB</td>
+                                      <td style={{ padding: '1rem', textAlign: 'right', color: 'var(--text-muted)', textTransform: 'capitalize', fontSize: '0.85rem' }}>{rep.paymentMethod}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
                           ) : (
-                            <div style={{ fontSize: '0.875rem', color: '#64748b', fontStyle: 'italic', textAlign: 'center', padding: '1rem' }}>
-                              No repayments recorded yet.
+                            <div style={{ padding: '3rem', textAlign: 'center', background: 'rgba(15, 23, 42, 0.01)', borderRadius: '16px', border: '1px dashed var(--border)' }}>
+                              <div style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>⏳</div>
+                              <div style={{ color: 'var(--text-muted)', fontSize: '0.85rem', fontWeight: 700 }}>No repayments recorded yet.</div>
                             </div>
                           )}
                         </div>
@@ -224,8 +285,22 @@ export default function MyLoans() {
               ))}
               {filteredLoans.length === 0 && (
                 <tr>
-                  <td colSpan="5" style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
-                    No loans found matching your filters.
+                  <td colSpan="5" style={{ padding: '8rem 2rem', textAlign: 'center' }}>
+                    <div style={{
+                      width: '80px',
+                      height: '80px',
+                      background: 'rgba(15, 23, 42, 0.02)',
+                      borderRadius: '24px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      margin: '0 auto 1.5rem',
+                      border: '1px solid var(--border)'
+                    }}>
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" strokeWidth="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" /></svg>
+                    </div>
+                    <h3 style={{ color: 'var(--text-primary)', fontWeight: 900, fontSize: '1.5rem', margin: 0 }}>No Loans Found</h3>
+                    <p style={{ color: 'var(--text-muted)', marginTop: '0.5rem' }}>Your loan portfolio is currently empty.</p>
                   </td>
                 </tr>
               )}

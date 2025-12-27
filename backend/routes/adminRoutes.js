@@ -19,8 +19,14 @@ router.get('/repayments', admin.reportsRepayments);
 router.get('/reports/savings', admin.reportsSavings);
 router.get('/reports/loans', admin.reportsLoans);
 router.get('/reports/repayments', admin.reportsRepayments);
+router.get('/reports/savings/detailed', admin.reportsSavingsDetailed);
+router.get('/reports/loans/detailed', admin.reportsLoansDetailed);
+router.get('/reports/repayments/detailed', admin.reportsRepaymentsDetailed);
+router.get('/reports/members/detailed', admin.reportsMembersDetailed);
+router.get('/reports/staff/detailed', admin.reportsStaffDetailed);
 router.get('/dashboard-stats', admin.getDashboardStats);
 router.get('/audit-logs', admin.auditLogs);
+router.get('/search', admin.globalSearch);
 
 router.get('/loans/pending', adminLoan.pendingLoans);
 router.get('/loan/:id/approve', adminLoan.approveLoan);
@@ -31,3 +37,4 @@ router.get('/settings', admin.getSettings);
 router.put('/settings', admin.updateSettings);
 
 module.exports = router;
+// Force restart for controller update

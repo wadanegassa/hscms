@@ -63,10 +63,12 @@ exports.applyLoan = async (req, res, next) => {
     ]);
 
     const totalSavings = agg[0] ? agg[0].total : 0;
-    const loanMultiplier = settings?.loanMultiplier || 3;
+    const multiplier = settings?.loanMultiplier || 3;
+    const minSavings = settings?.minSavingsForLoan || 0;
     const interestRate = settings?.interestRate || 5;
-    const maxLoan = totalSavings * loanMultiplier;
+    const maxLoan = totalSavings * multiplier;
 
+    if (totalSavings < minSavings) return error(res, `Minimum savings of ${minSavings} ETB required to apply for a loan.`, 400);
     if (amount > maxLoan) return error(res, `Requested exceeds eligibility. Max allowed: ${maxLoan}`, 400);
 
     const loan = await Loan.create({
@@ -96,15 +98,31 @@ exports.checkEligibility = async (req, res, next) => {
 
     const totalSavings = agg[0] ? agg[0].total : 0;
     const multiplier = settings?.loanMultiplier || 3;
+    const minSavings = settings?.minSavingsForLoan || 0;
     const maxLoan = totalSavings * multiplier;
-    success(res, { totalSavings, multiplier, maxLoan });
+    success(res, { totalSavings, multiplier, maxLoan, minSavings });
   } catch (err) { next(err); }
 };
 
 exports.getLoansForMember = async (req, res, next) => {
   try {
-    const loans = await Loan.find({ memberId: req.user._id }).sort({ createdAt: -1 });
-    success(res, loans);
+    const loans = await Loan.find({ memberId: req.user._id }).sort({ createdAt: -1 }).lean();
+
+    const loansWithBalance = await Promise.all(loans.map(async (loan) => {
+      const totalDue = loan.amount + (loan.amount * loan.interestRate / 100);
+      const repaidAgg = await Repayment.aggregate([
+        { $match: { loanId: loan._id } },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]);
+      const totalRepaid = repaidAgg[0] ? repaidAgg[0].total : 0;
+      return {
+        ...loan,
+        remainingBalance: Math.max(0, totalDue - totalRepaid),
+        totalRepaid
+      };
+    }));
+
+    success(res, loansWithBalance);
   } catch (err) { next(err); }
 };
 
@@ -150,5 +168,45 @@ exports.markNotificationRead = async (req, res, next) => {
     const { id } = req.params;
     await Notification.findOneAndUpdate({ _id: id, userId: req.user._id }, { isRead: true });
     success(res, null, 'Notification marked as read');
+  } catch (err) { next(err); }
+};
+
+exports.getDashboardStats = async (req, res, next) => {
+  try {
+    const memberId = req.user._id;
+
+    const [savingsAgg, loans, notifications, recentSavings] = await Promise.all([
+      Saving.aggregate([
+        { $match: { memberId } },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]),
+      Loan.find({ memberId, status: { $in: ['active', 'approved'] } }),
+      Notification.find({ userId: memberId }).sort({ createdAt: -1 }).limit(5),
+      Saving.find({ memberId }).sort({ date: -1 }).limit(5)
+    ]);
+
+    const totalSavings = savingsAgg[0] ? savingsAgg[0].total : 0;
+    const activeLoan = loans[0] || null;
+
+    let remainingBalance = 0;
+    if (activeLoan) {
+      const totalDue = activeLoan.amount + (activeLoan.amount * activeLoan.interestRate / 100);
+
+      const repaidAgg = await Repayment.aggregate([
+        { $match: { loanId: activeLoan._id } },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]);
+      const totalRepaid = repaidAgg[0] ? repaidAgg[0].total : 0;
+
+      remainingBalance = Math.max(0, totalDue - totalRepaid);
+    }
+
+    success(res, {
+      totalSavings,
+      activeLoan,
+      remainingBalance,
+      notifications,
+      recentSavings
+    });
   } catch (err) { next(err); }
 };

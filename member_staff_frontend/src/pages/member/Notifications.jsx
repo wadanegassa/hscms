@@ -40,16 +40,35 @@ export default function Notifications() {
 
     return (
         <div className="fade-in">
-            <div className="mb-8">
-                <h2 className="page-title">Notifications</h2>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Stay updated with your account activity.</p>
-            </div>
+            <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+                <div>
+                    <h2 className="page-title" style={{ fontSize: '2.8rem', fontWeight: 900, letterSpacing: '-0.04em', color: 'var(--text-primary)', textTransform: 'uppercase' }}>
+                        System <span style={{ color: 'var(--primary)' }}>Notifications</span>
+                    </h2>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '1.1rem', marginTop: '0.5rem', fontWeight: 600 }}>
+                        Stay updated with your account activity and loan status.
+                    </p>
+                </div>
+            </header>
 
-            <div className="glass-card" style={{ padding: '1.5rem' }}>
+            <div className="glass-card" style={{ padding: '2rem', background: 'var(--bg-secondary)', border: '1px solid var(--border)' }}>
                 {notifications.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
-                        <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🔔</div>
-                        <p>You have no notifications at this time.</p>
+                    <div style={{ textAlign: 'center', padding: '6rem 2rem', color: 'var(--text-muted)' }}>
+                        <div style={{
+                            width: '80px',
+                            height: '80px',
+                            background: 'rgba(15, 23, 42, 0.02)',
+                            borderRadius: '24px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            margin: '0 auto 1.5rem',
+                            border: '1px solid var(--border)'
+                        }}>
+                            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" /><path d="M13.73 21a2 2 0 0 1-3.46 0" /></svg>
+                        </div>
+                        <h3 style={{ color: 'var(--text-primary)', fontWeight: 900, fontSize: '1.5rem', margin: 0 }}>No Notifications</h3>
+                        <p style={{ marginTop: '0.5rem', fontWeight: 600 }}>You're all caught up! No new messages.</p>
                     </div>
                 ) : (
                     <div style={{ display: 'grid', gap: '1rem' }}>
@@ -59,26 +78,27 @@ export default function Notifications() {
                                 style={{
                                     display: 'flex',
                                     alignItems: 'flex-start',
-                                    gap: '1rem',
-                                    padding: '1.25rem',
-                                    background: n.isRead ? 'transparent' : 'rgba(59, 130, 246, 0.05)',
-                                    borderRadius: '16px',
-                                    border: `1px solid ${n.isRead ? 'var(--border)' : 'rgba(59, 130, 246, 0.2)'}`,
-                                    transition: 'all 0.2s ease'
+                                    gap: '1.5rem',
+                                    padding: '1.5rem',
+                                    background: n.isRead ? 'rgba(15, 23, 42, 0.01)' : 'rgba(234, 179, 8, 0.05)',
+                                    borderRadius: '20px',
+                                    border: `1px solid ${n.isRead ? 'var(--border)' : 'rgba(234, 179, 8, 0.15)'}`,
+                                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                                 }}
                             >
                                 <div style={{
-                                    width: '40px',
-                                    height: '40px',
-                                    borderRadius: '10px',
-                                    background: n.isRead ? 'var(--bg-hover)' : 'var(--primary-glow)',
+                                    width: '48px',
+                                    height: '48px',
+                                    borderRadius: '14px',
+                                    background: n.isRead ? 'rgba(15, 23, 42, 0.02)' : 'rgba(234, 179, 8, 0.1)',
                                     color: n.isRead ? 'var(--text-muted)' : 'var(--primary)',
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    flexShrink: 0
+                                    flexShrink: 0,
+                                    border: `1px solid ${n.isRead ? 'var(--border)' : 'rgba(234, 179, 8, 0.2)'}`
                                 }}>
-                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                                         <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
                                         <path d="M13.73 21a2 2 0 0 1-3.46 0" />
                                     </svg>

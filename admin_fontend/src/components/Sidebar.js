@@ -5,12 +5,95 @@ import auth from '../services/auth';
 const Sidebar = () => {
   const navigate = useNavigate();
   const navItems = [
-    { path: '/', label: 'Dashboard', icon: '📊' },
-    { path: '/staff', label: 'Manage Staff', icon: '🛡️' },
-    { path: '/members', label: 'Manage Members', icon: '👥' },
-    { path: '/loans', label: 'Loan Approvals', icon: '💸' },
-    { path: '/reports', label: 'Reports', icon: '📑' },
-    { path: '/audit-logs', label: 'Audit Logs', icon: '📜' },
+    {
+      path: '/',
+      label: 'Dashboard',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="3" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="3" width="7" height="7" rx="1" />
+          <rect x="14" y="14" width="7" height="7" rx="1" />
+          <rect x="3" y="14" width="7" height="7" rx="1" />
+        </svg>
+      )
+    },
+    {
+      path: '/staff',
+      label: 'Manage Staff',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+      )
+    },
+    {
+      path: '/members',
+      label: 'Manage Members',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+          <circle cx="9" cy="7" r="4" />
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+        </svg>
+      )
+    },
+    {
+      path: '/loans',
+      label: 'Loan Approvals',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <line x1="12" y1="1" x2="12" y2="23" />
+          <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+        </svg>
+      )
+    },
+    {
+      path: '/loan-overview',
+      label: 'Loan Overview',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" />
+        </svg>
+      )
+    },
+    {
+      path: '/reports',
+      label: 'Reports',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+          <polyline points="14 2 14 8 20 8" />
+          <line x1="16" y1="13" x2="8" y2="13" />
+          <line x1="16" y1="17" x2="8" y2="17" />
+          <polyline points="10 9 9 9 8 9" />
+        </svg>
+      )
+    },
+    {
+      path: '/transactions',
+      label: 'Savings Overview',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" /></svg>
+      )
+    },
+    {
+      path: '/users',
+      label: 'User Registry',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
+      )
+    },
+    {
+      path: '/settings',
+      label: 'System Settings',
+      icon: (
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" /></svg>
+      )
+    },
   ];
 
   const handleLogout = () => {
@@ -20,17 +103,26 @@ const Sidebar = () => {
 
   return (
     <aside className="sidebar">
-      <div className="sidebar-header" style={{ marginBottom: '2rem' }}>
-        <div className="brand-icon" style={{ fontSize: '1.5rem' }}>🏦</div>
+      <div className="sidebar-header">
+        <div className="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3">
+            <path d="M3 21h18" />
+            <path d="M3 10h18" />
+            <path d="M5 10V21" />
+            <path d="M19 10V21" />
+            <path d="M9 21v-4a3 3 0 0 1 6 0v4" />
+            <path d="M2 10l10-8 10 8" />
+          </svg>
+        </div>
         <div className="brand-text">
-          <h1 style={{ fontSize: '1.1rem', fontWeight: 800, letterSpacing: '-0.02em' }}>Harari Admin</h1>
-          <p style={{ fontSize: '0.7rem', opacity: 0.6, textTransform: 'uppercase', letterSpacing: '0.05em' }}>Management System</p>
+          <h1>HSCMS</h1>
+          <p>Admin</p>
         </div>
       </div>
 
-      <nav className="nav" style={{ flex: 1 }}>
-        <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '1rem', paddingLeft: '1rem' }}>
-          System Menu
+      <nav className="nav">
+        <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.15em', marginBottom: '1rem', paddingLeft: '1.25rem' }}>
+          System Core
         </div>
         {navItems.map((item) => (
           <NavLink
@@ -39,38 +131,13 @@ const Sidebar = () => {
             end={item.path === '/'}
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
           >
-            <span style={{ fontSize: '1.2rem' }}>{item.icon}</span>
+            {item.icon}
             <span style={{ fontWeight: 600 }}>{item.label}</span>
           </NavLink>
         ))}
       </nav>
 
-      <div className="sidebar-footer" style={{ borderTop: '1px solid var(--border)', paddingTop: '1.5rem' }}>
-        <div className="user-info" style={{ marginBottom: '1rem', background: 'rgba(255,255,255,0.03)', padding: '1rem', borderRadius: '12px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--gradient-primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 800 }}>A</div>
-            <div>
-              <p style={{ fontSize: '0.8rem', fontWeight: 700, margin: 0 }}>Administrator</p>
-              <p style={{ fontSize: '0.65rem', color: 'var(--text-muted)', margin: 0 }}>System Root</p>
-            </div>
-          </div>
-        </div>
-        <button
-          onClick={handleLogout}
-          className="nav-link"
-          style={{
-            width: '100%',
-            border: 'none',
-            background: 'rgba(244, 63, 94, 0.05)',
-            color: 'var(--danger)',
-            cursor: 'pointer',
-            justifyContent: 'flex-start'
-          }}
-        >
-          <span style={{ fontSize: '1.2rem' }}>🚪</span>
-          <span style={{ fontWeight: 600 }}>Logout</span>
-        </button>
-      </div>
+
     </aside>
   );
 };
