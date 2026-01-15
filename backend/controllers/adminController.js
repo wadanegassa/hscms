@@ -139,15 +139,45 @@ exports.reportsSavingsDetailed = async (req, res, next) => {
 
 exports.reportsLoansDetailed = async (req, res, next) => {
   try {
-    const loans = await Loan.find().populate('memberId', 'fullName email phone').sort({ createdAt: -1 });
-    success(res, loans);
+    const loans = await Loan.find().populate('memberId', 'fullName email phone').sort({ createdAt: -1 }).lean();
+
+    const loansWithStats = await Promise.all(loans.map(async (loan) => {
+      const totalDue = loan.amount + (loan.amount * loan.interestRate / 100);
+      const repaidAgg = await Repayment.aggregate([
+        { $match: { loanId: loan._id } },
+        { $group: { _id: null, total: { $sum: '$amount' } } }
+      ]);
+      const totalRepaid = repaidAgg[0] ? repaidAgg[0].total : 0;
+      return {
+        ...loan,
+        totalRepaid,
+        remainingBalance: Math.max(0, totalDue - totalRepaid)
+      };
+    }));
+
+    success(res, loansWithStats);
   } catch (err) { next(err); }
 };
 
 exports.reportsRepaymentsDetailed = async (req, res, next) => {
   try {
-    const repayments = await Repayment.find().populate('memberId', 'fullName email phone').sort({ date: -1 });
-    success(res, repayments);
+    const repayments = await Repayment.find()
+      .populate({
+        path: 'loanId',
+        populate: { path: 'memberId', select: 'fullName email phone' }
+      })
+      .sort({ date: -1 });
+
+    // Map to hoist memberId to top level for frontend compatibility
+    const formattedRepayments = repayments.map(r => {
+      const rep = r.toObject();
+      if (rep.loanId && rep.loanId.memberId) {
+        rep.memberId = rep.loanId.memberId;
+      }
+      return rep;
+    });
+
+    success(res, formattedRepayments);
   } catch (err) { next(err); }
 };
 

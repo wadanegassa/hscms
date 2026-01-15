@@ -10,6 +10,12 @@ const userSchema = new mongoose.Schema({
   nationalId: { type: String },
   bankAccount: { type: String },
   telebirr: { type: String },
+  occupation: {
+    type: String,
+    enum: ['Government Employee', 'Small Business Owner', 'Trader', 'Farmer'],
+    required: function () { return this.role === 'member'; }
+  },
+  organizationName: { type: String },
   createdAt: { type: Date, default: Date.now }
 });
 

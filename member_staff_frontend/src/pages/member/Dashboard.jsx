@@ -54,23 +54,43 @@ export default function MemberDashboard() {
           </p>
         </div>
         <div style={{ display: 'flex', gap: '1rem' }}>
-          <Link to="/member/apply-loan" className="btn hover-glow" style={{
-            background: 'var(--gradient-primary)',
-            color: '#000',
-            padding: '0.875rem 2rem',
-            borderRadius: '16px',
-            border: 'none',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.75rem',
-            textDecoration: 'none',
-            fontWeight: 900,
-            textTransform: 'uppercase',
-            letterSpacing: '0.05em'
-          }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 5v14M5 12h14" /></svg>
-            Apply for Loan
-          </Link>
+          {summary.activeLoan ? (
+            <button disabled className="btn" style={{
+              background: 'rgba(255,255,255,0.1)',
+              color: 'var(--text-muted)',
+              padding: '0.875rem 2rem',
+              borderRadius: '16px',
+              border: '1px solid var(--border)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              cursor: 'not-allowed',
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em'
+            }} title={`You have ${summary.remainingBalance?.toLocaleString()} ETB loan. Please first repay it before applying for a new one.`}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 5v14M5 12h14" /></svg>
+              Loan Active
+            </button>
+          ) : (
+            <Link to="/member/apply-loan" className="btn hover-glow" style={{
+              background: 'var(--gradient-primary)',
+              color: '#000',
+              padding: '0.875rem 2rem',
+              borderRadius: '16px',
+              border: 'none',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              textDecoration: 'none',
+              fontWeight: 900,
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em'
+            }}>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><path d="M12 5v14M5 12h14" /></svg>
+              Apply for Loan
+            </Link>
+          )}
         </div>
       </header>
 

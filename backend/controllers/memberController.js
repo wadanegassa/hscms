@@ -54,6 +54,16 @@ exports.applyLoan = async (req, res, next) => {
     const memberId = req.user._id;
     const { amount, purpose } = req.body;
 
+    // Check for existing active/pending/approved loans
+    const existingLoan = await Loan.findOne({
+      memberId,
+      status: { $in: ['pending', 'approved', 'active'] }
+    });
+
+    if (existingLoan) {
+      return error(res, 'You already have an active or pending loan application.', 400);
+    }
+
     const [agg, settings] = await Promise.all([
       Saving.aggregate([
         { $match: { memberId } },
@@ -99,8 +109,9 @@ exports.checkEligibility = async (req, res, next) => {
     const totalSavings = agg[0] ? agg[0].total : 0;
     const multiplier = settings?.loanMultiplier || 3;
     const minSavings = settings?.minSavingsForLoan || 0;
+    const interestRate = settings?.interestRate || 5;
     const maxLoan = totalSavings * multiplier;
-    success(res, { totalSavings, multiplier, maxLoan, minSavings });
+    success(res, { totalSavings, multiplier, maxLoan, minSavings, interestRate });
   } catch (err) { next(err); }
 };
 

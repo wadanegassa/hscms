@@ -137,6 +137,28 @@ export default function Profile() {
           </div>
 
           <div className="input-group">
+            <label className="label">Occupation</label>
+            <input
+              className="input"
+              value={profile.occupation || 'N/A'}
+              readOnly
+              style={{ background: 'rgba(15, 23, 42, 0.02)', cursor: 'default', color: 'var(--text-muted)' }}
+            />
+          </div>
+
+          {profile.organizationName && (
+            <div className="input-group">
+              <label className="label">Organization / Business Name</label>
+              <input
+                className="input"
+                value={profile.organizationName}
+                readOnly
+                style={{ background: 'rgba(15, 23, 42, 0.02)', cursor: 'default', color: 'var(--text-muted)' }}
+              />
+            </div>
+          )}
+
+          <div className="input-group">
             <label className="label">New Password (leave blank to keep current)</label>
             <input
               className="input"

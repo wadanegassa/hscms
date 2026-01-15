@@ -77,9 +77,9 @@ const Reports = () => {
     doc.text(`Generated on: ${date}`, 105, 32, { align: 'center' });
 
     const tableColumn = reportType === 'loans'
-      ? ["Member", "Amount", "Status", "Date"]
+      ? ["Member", "Amount", "Repaid", "Remaining", "Status", "Date"]
       : (reportType === 'members' || reportType === 'staff')
-        ? ["Name", "Email", "Phone", "Status", "Joined"]
+        ? ["Name", "Email", "Phone", "Occupation", "Organization", "Status", "Joined"]
         : reportType === 'audit'
           ? ["Action", "Performed By", "Target", "Date"]
           : ["Member", "Amount", "Date"];
@@ -90,6 +90,8 @@ const Reports = () => {
           item.fullName || 'N/A',
           item.email || 'N/A',
           item.phone || 'N/A',
+          item.occupation || 'N/A',
+          item.organizationName || 'N/A',
           item.status || 'N/A',
           item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'
         ];
@@ -108,6 +110,9 @@ const Reports = () => {
         reportType === 'loans' ? (item.status || 'N/A') : (item.date || item.createdAt ? new Date(item.date || item.createdAt).toLocaleDateString() : 'N/A'),
       ];
       if (reportType === 'loans') {
+        row.push((item.totalRepaid || 0).toLocaleString());
+        row.push((item.remainingBalance || 0).toLocaleString());
+        row.push(item.status || 'N/A');
         row.push(item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A');
       }
       return row;
@@ -132,9 +137,9 @@ const Reports = () => {
     }
 
     const headers = (reportType === 'members' || reportType === 'staff')
-      ? ["Name", "Email", "Phone", "Status", "Joined"]
+      ? ["Name", "Email", "Phone", "Occupation", "Organization", "Status", "Joined"]
       : reportType === 'loans'
-        ? ["Member", "Email", "Amount", "Status", "Date"]
+        ? ["Member", "Email", "Amount", "Repaid", "Remaining", "Status", "Date"]
         : reportType === 'audit'
           ? ["Action", "Performed By", "Target", "Date"]
           : ["Member", "Email", "Amount", "Date"];
@@ -144,11 +149,13 @@ const Reports = () => {
       ...detailedData.map(item => {
         if (reportType === 'members' || reportType === 'staff') {
           return [
-            `"${item.fullName}"`,
-            `"${item.email}"`,
+            `"${item.fullName || 'N/A'}"`,
+            `"${item.email || 'N/A'}"`,
             `"${item.phone || 'N/A'}"`,
-            `"${item.status}"`,
-            `"${new Date(item.createdAt).toLocaleDateString()}"`
+            `"${item.occupation || 'N/A'}"`,
+            `"${item.organizationName || 'N/A'}"`,
+            `"${item.status || 'N/A'}"`,
+            `"${item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'}"`
           ].join(',');
         }
         if (reportType === 'audit') {
@@ -166,6 +173,9 @@ const Reports = () => {
           reportType === 'loans' ? (item.status || 'N/A') : `"${item.date || item.createdAt ? new Date(item.date || item.createdAt).toLocaleDateString() : 'N/A'}"`,
         ];
         if (reportType === 'loans') {
+          row.push(item.totalRepaid || 0);
+          row.push(item.remainingBalance || 0);
+          row.push(item.status || 'N/A');
           row.push(`"${item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'}"`);
         }
         return row.join(',');
@@ -343,10 +353,12 @@ const Reports = () => {
                 <tr style={{ background: 'rgba(255,255,255,0.02)' }}>
                   {(reportType === 'members' || reportType === 'staff') ? (
                     <>
-                      <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>User Profile</th>
+                      <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Name</th>
                       <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Contact</th>
+                      <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Occupation</th>
+                      <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Organization</th>
                       <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Status</th>
-                      <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Joined Date</th>
+                      <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Joined</th>
                     </>
                   ) : reportType === 'audit' ? (
                     <>
@@ -359,6 +371,12 @@ const Reports = () => {
                     <>
                       <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Member</th>
                       <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Amount</th>
+                      {reportType === 'loans' && (
+                        <>
+                          <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Repaid</th>
+                          <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Remaining</th>
+                        </>
+                      )}
                       <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>{reportType === 'loans' ? 'Status' : 'Date'}</th>
                       {reportType === 'loans' && <th style={{ padding: '1.25rem 1.5rem', textAlign: 'left', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Request Date</th>}
                     </>
@@ -376,6 +394,8 @@ const Reports = () => {
                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{item.email || 'N/A'}</div>
                           </td>
                           <td style={{ padding: '1.25rem 1.5rem', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>{item.phone || 'N/A'}</td>
+                          <td style={{ padding: '1.25rem 1.5rem', fontWeight: 600, color: 'var(--text-secondary)' }}>{item.occupation || 'N/A'}</td>
+                          <td style={{ padding: '1.25rem 1.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>{item.organizationName || '-'}</td>
                           <td style={{ padding: '1.25rem 1.5rem' }}>
                             <span style={{
                               padding: '4px 10px',
@@ -410,6 +430,12 @@ const Reports = () => {
                             <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{item.memberId?.email || 'N/A'}</div>
                           </td>
                           <td style={{ padding: '1.25rem 1.5rem', fontWeight: 900, color: 'var(--primary)', fontSize: '1.1rem' }}>${(item.amount || 0).toLocaleString()}</td>
+                          {reportType === 'loans' && (
+                            <>
+                              <td style={{ padding: '1.25rem 1.5rem', fontWeight: 700, color: 'var(--success)' }}>${(item.totalRepaid || 0).toLocaleString()}</td>
+                              <td style={{ padding: '1.25rem 1.5rem', fontWeight: 700, color: 'var(--warning)' }}>${(item.remainingBalance || 0).toLocaleString()}</td>
+                            </>
+                          )}
                           <td style={{ padding: '1.25rem 1.5rem' }}>
                             {reportType === 'loans' ? (
                               <span style={{
@@ -418,9 +444,15 @@ const Reports = () => {
                                 fontSize: '0.7rem',
                                 fontWeight: 800,
                                 textTransform: 'uppercase',
-                                background: item.status === 'approved' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-                                color: item.status === 'approved' ? 'var(--primary)' : 'var(--warning)',
-                                border: `1px solid ${item.status === 'approved' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(245, 158, 11, 0.2)'}`
+                                background: item.status === 'approved' ? 'rgba(16, 185, 129, 0.1)' :
+                                  item.status === 'completed' ? 'rgba(59, 130, 246, 0.1)' :
+                                    'rgba(245, 158, 11, 0.1)',
+                                color: item.status === 'approved' ? 'var(--primary)' :
+                                  item.status === 'completed' ? 'var(--secondary)' :
+                                    'var(--warning)',
+                                border: `1px solid ${item.status === 'approved' ? 'rgba(16, 185, 129, 0.2)' :
+                                  item.status === 'completed' ? 'rgba(59, 130, 246, 0.2)' :
+                                    'rgba(245, 158, 11, 0.2)'}`
                               }}>
                                 {item.status || 'N/A'}
                               </span>

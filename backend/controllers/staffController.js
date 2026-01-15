@@ -9,7 +9,7 @@ const User = require('../models/User');
 
 exports.registerMember = async (req, res, next) => {
   try {
-    const { fullName, email, password, phone, nationalId, bankAccount, telebirr } = req.body;
+    const { fullName, email, password, phone, nationalId, bankAccount, telebirr, occupation, organizationName } = req.body;
     const existing = await User.findOne({ email });
     if (existing) return error(res, 'Email already in use', 400);
 
@@ -22,6 +22,8 @@ exports.registerMember = async (req, res, next) => {
       nationalId,
       bankAccount,
       telebirr,
+      occupation,
+      organizationName,
       role: 'member',
       status: 'active'
     });

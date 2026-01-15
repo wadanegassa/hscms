@@ -1,0 +1,83 @@
+# Backend System Explanation
+
+This document provides a deep dive into the backend architecture, logic, and functionality of the Harari Saving and Credit Management System.
+
+## 1. Architecture Overview
+
+The backend is built using a standard **MERN stack** (MongoDB, Express.js, React, Node.js) architecture, specifically focusing on the **Node.js/Express** runtime and **MongoDB** database.
+
+- **Runtime**: Node.js
+- **Framework**: Express.js for handling HTTP requests and routing.
+- **Database**: MongoDB (accessed via Mongoose ODM) for flexible, schema-based data modeling.
+- **Authentication**: JWT (JSON Web Tokens) for stateless authentication.
+
+## 2. Directory Structure
+
+- **`server.js`**: The entry point. It initializes the Express app, connects to the database, sets up middleware (CORS, JSON parsing), and mounts the routes.
+- **`config/`**: Contains database connection logic (`db.js`).
+- **`models/`**: Mongoose schemas defining the data structure.
+- **`controllers/`**: Contains the business logic for each feature.
+- **`routes/`**: Defines the API endpoints and maps them to controllers.
+- **`middleware/`**: Custom middleware for authentication (`authMiddleware.js`), role checking (`roleMiddleware.js`), and error handling (`errorHandler.js`).
+- **`utils/`**: Helper functions (e.g., standard response formatting).
+
+## 3. Data Models
+
+The system relies on several key entities:
+
+1.  **User**: Represents all system users (Admin, Staff, Members).
+    -   Fields: `fullName`, `email`, `password`, `role`, `phone`, `status`.
+    -   Member-specific fields: `occupation`, `organizationName`, `nationalId`, `bankAccount`.
+2.  **Saving**: Records individual saving transactions.
+    -   Fields: `memberId`, `amount`, `date`, `paymentMethod`, `recordedBy`.
+3.  **Loan**: Manages loan applications and status.
+    -   Fields: `memberId`, `amount`, `interestRate`, `purpose`, `status` (pending, approved, active, completed).
+4.  **Repayment**: Tracks loan repayments.
+    -   Fields: `loanId`, `amount`, `date`, `recordedBy`.
+5.  **Goal**: Allows members to set saving targets.
+6.  **AuditLog**: Tracks critical system actions for security and accountability.
+7.  **Settings**: Global system configuration (e.g., `loanMultiplier`, `interestRate`).
+8.  **Notification**: System alerts for users.
+
+## 4. Key Business Logic
+
+### Authentication & Authorization
+-   **Login**: Users log in with email and password. The system issues a JWT containing their `id` and `role`.
+-   **Password Storage**: Passwords are currently stored in **plain text** as per specific project requirements (note: this is non-standard for production but implemented as requested).
+-   **Role-Based Access Control (RBAC)**: Middleware ensures only authorized roles can access specific endpoints (e.g., only Admins can delete users).
+
+### Member Features
+-   **Savings**: Members can view their savings history.
+-   **Loan Application**:
+    -   **Eligibility**: Calculated based on `Total Savings * Loan Multiplier` (defined in Settings).
+    -   **Validation**: Checks if the user already has an active loan or if the requested amount exceeds their limit.
+-   **Goals**: Members can set a target savings amount and track their progress (percentage).
+
+### Staff Features
+-   **Member Management**: Staff can register new members.
+-   **Transactions**: Staff record **Savings** and **Repayments** on behalf of members.
+    -   *Repayment Logic*: When a repayment is recorded, the system checks if the total repaid equals the total due (Principal + Interest). If so, the loan status is automatically updated to `completed`.
+
+### Admin Features
+-   **Dashboard**: Provides high-level stats (Total Savings, Active Loans, Savings Growth charts).
+-   **User Management**: Full CRUD (Create, Read, Update, Delete) capabilities for all users.
+-   **System Settings**: Admins can configure:
+    -   `loanMultiplier`: How many times their savings a member can borrow (e.g., 3x).
+    -   `interestRate`: The percentage interest applied to loans.
+    -   `minSavingsForLoan`: Minimum balance required to apply.
+-   **Reports**: Detailed aggregation of savings, loans, and repayments for analysis.
+-   **Audit Logs**: View a history of who did what (e.g., "Staff X registered Member Y").
+
+## 5. API Structure
+
+The API is versioned under `/api` and segmented by resource:
+
+-   `/api/auth`: Login and registration.
+-   `/api/member`: Member-facing actions (dashboard, apply loan).
+-   `/api/staff`: Staff actions (record transaction, lookup member).
+-   `/api/admin`: Admin actions (reports, settings, user management).
+-   `/api/notifications`: Fetch and mark notifications as read.
+
+## 6. Error Handling
+
+A global error handler middleware intercepts exceptions and returns standardized JSON error responses, preventing server crashes and ensuring consistent API behavior.

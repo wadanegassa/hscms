@@ -57,6 +57,14 @@ export default function LoanEligibility() {
               <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>System Multiplier</span>
               <span style={{ fontWeight: 700, color: 'var(--primary)' }}>{data?.multiplier || 0}x</span>
             </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Min. Savings Required</span>
+              <span style={{ fontWeight: 700, color: 'var(--warning)' }}>{(data?.minSavings || 0).toLocaleString()} ETB</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '1rem', borderBottom: '1px solid var(--border)' }}>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Interest Rate</span>
+              <span style={{ fontWeight: 700, color: 'var(--text-primary)' }}>{data?.interestRate || 5}%</span>
+            </div>
             <div style={{ padding: '2rem', background: 'rgba(15, 23, 42, 0.02)', borderRadius: '24px', marginTop: '1rem', border: '1px solid var(--border)' }}>
               <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginBottom: '0.75rem', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Maximum Loan Amount</div>
               <div style={{ fontSize: '2.5rem', fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
@@ -93,7 +101,7 @@ export default function LoanEligibility() {
             </li>
             <li style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', fontWeight: 600 }}>
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--primary)" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
-              Interest rates are set by the system administrator.
+              Interest rate is currently set at <span style={{ color: 'var(--primary)', fontWeight: 900, marginLeft: '4px' }}>{data?.interestRate || 5}%</span>.
             </li>
           </ul>
         </div>
