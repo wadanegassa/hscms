@@ -223,12 +223,13 @@ exports.getDashboardStats = async (req, res, next) => {
       Saving.aggregate([
         {
           $group: {
-            _id: { $dateToString: { format: "%Y-%m", date: "$date" } },
+            _id: { $dateToString: { format: "%H:%M", date: "$date", timezone: "Africa/Addis_Ababa" } },
             total: { $sum: "$amount" }
           }
         },
-        { $sort: { _id: 1 } },
-        { $limit: 6 }
+        { $sort: { _id: -1 } },
+        { $limit: 10 },
+        { $sort: { _id: 1 } }
       ]),
       // Loan Distribution
       Loan.aggregate([

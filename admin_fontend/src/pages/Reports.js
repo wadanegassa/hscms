@@ -70,7 +70,7 @@ const Reports = () => {
     const date = new Date().toLocaleString();
 
     doc.setFontSize(20);
-    doc.text('Harari Sacco Management System', 105, 15, { align: 'center' });
+    doc.text('Harari saving and credit Management System', 105, 15, { align: 'center' });
     doc.setFontSize(16);
     doc.text(title, 105, 25, { align: 'center' });
     doc.setFontSize(10);
