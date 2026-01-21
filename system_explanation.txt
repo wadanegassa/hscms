@@ -1,0 +1,172 @@
+1. System Overview
+
+**What is the Harari Saving and Credit Management System?**
+It is a web-based application designed to digitize and automate the operations of a saving and credit cooperative. It replaces manual paper-based record-keeping with a centralized digital system.
+
+**Main Goal:**
+To streamline the management of members, savings, loans, and repayments, ensuring data accuracy, transparency, and efficiency for the organization.
+
+**Problems in the Manual System:**
+- **Data Redundancy & Errors:** Manual entry leads to mistakes and duplicate records.
+- **Slow Processing:** Calculating interest, checking eligibility, and generating reports takes a long time.
+- **Lack of Transparency:** Members cannot easily check their balances or loan status.
+- **Security Risks:** Physical files can be lost, damaged, or accessed by unauthorized persons.
+
+**How this System Solves them:**
+- **Automation:** Automatically calculates interest and loan eligibility.
+- **Centralized Database:** Stores all data securely in one place, preventing duplicates.
+- **Real-time Access:** Members and staff can view up-to-date information instantly.
+- **Security:** Uses digital authentication (Login) to control access.
+
+**"What does your system do?"**
+"My system allows members to save money and take loans. It helps staff record these transactions and helps admins manage the whole process and generate reports."
+
+---
+
+2. Users / Actors of the System
+
+**1. Admin**
+- **Role:** System Administrator & Manager.
+- **Capabilities:** Manages system settings (interest rates), manages staff/users, approves or rejects loans, and views comprehensive reports (audit logs, financial summaries).
+
+**2. Staff (Cashier/Officer)**
+- **Role:** Operational staff.
+- **Capabilities:** Registers new members, records daily savings deposits, and records loan repayments. They act as the bridge for members who come to the office.
+
+**3. Member**
+- **Role:** The customer/beneficiary.
+- **Capabilities:** Logs in to view their own profile, checks savings history, checks loan status, and applies for new loans online.
+
+---
+
+3. Main Functionalities
+
+**1. Login & Logout**
+- **Who:** All users.
+- **What:** Verifies identity using email and password. Grants access to the specific dashboard based on role.
+
+**2. Member Registration**
+- **Who:** Staff.
+- **What:** Staff fills out a form with member details (Name, Phone, Occupation, etc.) to create a new account in the system.
+
+**3. Saving Deposit**
+- **Who:** Staff.
+- **What:** Staff searches for a member and records a cash/bank deposit. The system updates the member's total savings.
+
+**4. Loan Request**
+- **Who:** Member.
+- **What:** A member applies for a loan. The system checks if they have enough savings (Eligibility Check) before allowing the request.
+
+**5. Loan Approval/Rejection**
+- **Who:** Admin.
+- **What:** Admin views pending loans and decides to Approve or Reject based on the member's history and funds.
+
+**6. Loan Repayment**
+- **Who:** Staff.
+- **What:** Staff records a payment against an active loan. The system deducts this from the loan balance.
+
+**7. Report Generation**
+- **Who:** Admin.
+- **What:** Generates summaries of total savings, active loans, and overdue payments for decision-making.
+
+---
+
+4. System Flow
+
+**Example: Loan Application & Approval Flow**
+
+1.  **Login:** Member logs in with email/password. System verifies credentials and issues a token.
+2.  **Apply:** Member navigates to "Apply Loan", enters amount and purpose.
+3.  **Validation:** System checks if `Requested Amount <= Total Savings * 3` (Policy).
+4.  **Submission:** If valid, the request is saved to the database with status "Pending".
+5.  **Notification:** Admin sees the new request on their dashboard.
+6.  **Decision:** Admin reviews and clicks "Approve".
+7.  **Update:** System updates loan status to "Approved" and notifies the member.
+
+---
+
+5. Implementation / Code Logic
+
+**Tech Stack:**
+- **Frontend:** React.js (User Interface)
+- **Backend:** Node.js & Express.js (API Logic)
+- **Database:** MongoDB (Data Storage)
+
+**How it works (Conceptual):**
+- **Frontend to Backend:** The React app sends HTTP requests (GET, POST) to the Express API (e.g., `POST /api/loans/apply`).
+- **Backend to Database:** The Express controller uses **Mongoose Models** to interact with MongoDB (e.g., `Loan.create(...)`).
+
+**Key Logic:**
+- **Authentication:** When a user logs in, the backend generates a **JWT (JSON Web Token)**. This token is sent with every subsequent request to prove identity.
+- **Authorization:** Middleware checks the token to see if the user is an Admin, Staff, or Member before allowing access to restricted routes.
+- **Validation:** Before saving data, the system checks rules (e.g., "Email must be unique", "Loan amount cannot exceed limit").
+
+---
+
+6. Database Design
+
+**Where is data stored?** In a MongoDB Database, organized into **Collections** (similar to tables).
+
+**Main Collections (Entities):**
+
+1.  **User**
+    - `_id` (PK), `fullName`, `email`, `password`, `role` (Admin/Staff/Member), `balance`.
+    - *Stores all login and profile info.*
+
+2.  **Saving**
+    - `_id` (PK), `memberId` (FK -> User), `amount`, `date`.
+    - *Records every deposit transaction.*
+
+3.  **Loan**
+    - `_id` (PK), `memberId` (FK -> User), `amount`, `status` (Pending/Approved), `interestRate`.
+    - *Tracks loan requests and their current state.*
+
+4.  **Repayment**
+    - `_id` (PK), `loanId` (FK -> Loan), `amount`, `date`.
+    - *Tracks payments made back towards a loan.*
+
+**Relationships:**
+- **One-to-Many:** One Member has Many Savings records.
+- **One-to-Many:** One Member can have Many Loans (over time).
+- **One-to-Many:** One Loan has Many Repayments.
+
+---
+
+7. Diagrams & Documentation
+
+- **Use Case Diagram:** Shows the actors (Admin, Staff, Member) and the circles representing actions they can do (e.g., "Approve Loan" connects to Admin). *Important for understanding requirements.*
+- **ER Diagram (Entity-Relationship):** Shows the database structure (User, Loan, Saving) and lines connecting them to show relationships. *Important for database design.*
+- **System Architecture:** Shows how the Frontend (Browser) connects to the Backend (Server) and then to the Database. *Important for understanding the technical setup.*
+
+---
+
+8. Terminology
+
+- **System:** The entire software application working together.
+- **Database:** The digital storage where all records are kept (MongoDB).
+- **Entity:** A real-world object we store data about (e.g., a Member, a Loan).
+- **Attribute:** A detail about an entity (e.g., Member's Phone Number).
+- **Primary Key (PK):** A unique ID that identifies one specific record (e.g., User ID).
+- **Foreign Key (FK):** An ID used to link to another record (e.g., Saving record has a `memberId` to know who owns it).
+- **CRUD:** Create, Read, Update, Delete (The 4 basic database operations).
+- **Frontend:** The part users see and click (React).
+- **Backend:** The logic running on the server (Node.js).
+
+---
+
+9. Security Concepts
+
+- **Login Authentication:** Verifying who the user is using Email and Password.
+- **Role-Based Access Control (RBAC):** Ensuring a "Member" cannot access "Admin" pages. The system checks the user's `role` before showing data.
+- **Input Validation:** Checking data before saving it (e.g., ensuring loan amount is a positive number) to prevent errors and attacks.
+- **Data Protection:** Using unique IDs and secure connections to keep data safe.
+
+---
+
+10. Advantages of Your System
+
+- **Efficiency:** Tasks that took hours (like calculating total savings) now take seconds.
+- **Accuracy:** Eliminates human calculation errors in interest and balances.
+- **Accessibility:** Members can check their status from anywhere, not just by visiting the office.
+- **Better Decision Making:** Admins have instant reports to see the financial health of the cooperative.
+- **Data Security:** Digital records are harder to lose or destroy than paper files.
